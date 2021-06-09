@@ -20,34 +20,62 @@ public class TableDonnee {
 		this.donnees = donnees;
 		this.entetes = entetes;
 	}
+	
+	/**
+	 * Retourne l'id de la colonne en fonction de son nom
+	 * @param nomColonne
+	 * @return
+	 */
+	public int getColonneId(String nomColonne) {
+		for (int id=0; id<entetes.length; id++) {
+			if (entetes[id].equals(nomColonne)) {
+				return id;
+			}
+		}
+		throw new RuntimeException("Aucune colonne ne porte le nom "+nomColonne);
+	}
 
+	/**
+	 * Filtre les lignes de la table en fonction de la valeur pour la colonne portant le nom nomColonne
+	 * @param nomColonne nom de la colonne ou filtrer
+	 * @param valeur de filtrage
+	 * @return nouvelle TableDonnee ayant uniquement les valeurs filtre.
+	 */
 	public TableDonnee filtre(String nomColonne, String valeur) {
-		// TODO
-		return null;
+		int idColonne = this.getColonneId(nomColonne);
+		List<String[]> donneeFiltre = new ArrayList<String[]>();
+		for(String[] ligne: this.donnees) {
+			if (ligne[idColonne].equals(valeur)) {
+				donneeFiltre.add(ligne);
+			}
+		}
+		return new TableDonnee(donneeFiltre, entetes);
 	}
 	
+	/**
+	 * Transforme la table au format List<Map<String,String>>.
+	 * @return
+	 */
 	public List<Map<String, String>> toListMap() {
 		List<Map<String, String>> output = new ArrayList<Map<String, String>>();
-
-        for(int i = 0; i < donnees.size(); i++) {
-            Map<String, String> mapped = new HashMap<String, String> ();
-            insertRowsInMap(donnees, i, mapped);
-            output.add(mapped);
+        for(String[] ligne: this.donnees) {
+            output.add(ligneToMap(ligne));
         }
-
         return output;
 	}
 	
-	private void insertRowsInMap(List<String[]> csvData, int i, Map<String, String> mapped) {
-		mapped.put("permalink", csvData.get(i)[0]);
-		mapped.put("company_name", csvData.get(i)[1]);
-		mapped.put("number_employees", csvData.get(i)[2]);
-		mapped.put("category", csvData.get(i)[3]);
-		mapped.put("city", csvData.get(i)[4]);
-		mapped.put("state", csvData.get(i)[5]);
-		mapped.put("funded_date", csvData.get(i)[6]);
-		mapped.put("raised_amount", csvData.get(i)[7]);
-		mapped.put("raised_currency", csvData.get(i)[8]);
-		mapped.put("round", csvData.get(i)[9]);
+	/**
+	 * Transforme une ligne en Map<String, String>.
+	 * @param ligne
+	 * @return
+	 */
+	private Map<String, String> ligneToMap(String[] ligne) {
+		Map<String, String> mapped = new HashMap<String, String> ();
+		int i = 0;
+		for(String nomColonne: this.entetes) {
+			mapped.put(nomColonne, ligne[i]);
+			i++;
+		}
+		return mapped;
 	}
 }

@@ -1,4 +1,4 @@
-package kira.formation.refactor.funding.raised;
+package kira.formation.refactor.funding.raised.readers;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.opencsv.CSVReader;
+
+import kira.formation.refactor.funding.raised.TableDonnee;
 
 public class CSVTableReader implements TableReader{
 
